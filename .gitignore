@@ -1,5 +1,6 @@
 *.class
 
+.settings/
 tartget/
 
 # Mobile Tools for Java (J2ME)
