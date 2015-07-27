@@ -47,10 +47,6 @@ public class TwitterKeyWordSource extends AbstractSource implements
 		consumerSecret = context.getString(TwitterConstants.CONSUMER_SECRET);
 		accessToken = context.getString(TwitterConstants.ACCESS_TOKEN);
 		accessTokenSecret = context.getString(TwitterConstants.ACCESS_SECRET);
-		LOG.info("ConsumerKey: " + consumerKey);
-		LOG.info("ConsumerSecre: " + consumerSecret);
-		LOG.info("accessToken: " + accessToken);
-		LOG.info("accessTokenSecret: " + accessTokenSecret);
 		String keywordString = context
 				.getString(TwitterConstants.TWITTER_KEYWORDS);
 		LOG.info("Processing keywords");
@@ -83,7 +79,7 @@ public class TwitterKeyWordSource extends AbstractSource implements
 
 			@Override
 			public void onStatus(Status status) {
-				LOG.debug(status.getUser().getScreenName() + ": "
+				LOG.info(status.getUser().getScreenName() + ": "
 						+ status.getText());
 				headers.put("timestamp",
 						String.valueOf(status.getCreatedAt().getTime()));
@@ -119,7 +115,7 @@ public class TwitterKeyWordSource extends AbstractSource implements
 		if (keywords.length == 0) {
 			LOG.error("No keywords in conf file");
 		} else {
-			LOG.debug("Starting twitter filtering...");
+			LOG.info("Starting twitter filtering...");
 			FilterQuery query = new FilterQuery().track(keywords);
 			//new FilterQuery(count, follow);
 			tStream.filter(query);
@@ -131,7 +127,7 @@ public class TwitterKeyWordSource extends AbstractSource implements
 	@Override
 	public synchronized void stop() {
 		// TODO Auto-generated method stub
-		LOG.debug("Stopping Twitter streaming");
+		LOG.info("Stopping Twitter streaming");
 		tStream.shutdown();
 		super.stop();
 	}
