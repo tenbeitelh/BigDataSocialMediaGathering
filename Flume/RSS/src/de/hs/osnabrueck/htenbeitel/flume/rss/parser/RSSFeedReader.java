@@ -5,10 +5,12 @@ import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.net.MalformedURLException;
 import java.net.URL;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
+import java.util.Locale;
 import java.util.Map;
 import java.util.Timer;
 import java.util.TimerTask;
@@ -21,6 +23,7 @@ import com.rometools.rome.feed.synd.SyndFeed;
 import com.rometools.rome.io.FeedException;
 import com.rometools.rome.io.SyndFeedInput;
 
+import de.hs.osnabrueck.htenbeitel.flume.rss.parser.model.FeedEntry;
 import de.hs.osnabrueck.htenbeitel.flume.rss.parser.utils.DateCompare;
 import de.hs.osnabrueck.htenbeitel.flume.rss.parser.utils.StateSerDeseriliazer;
 
@@ -32,7 +35,7 @@ public class RSSFeedReader {
 
 	private static final Logger LOG = LoggerFactory
 			.getLogger(RSSFeedReader.class);
-	private static final long TIME_IN_MINUTES = 30;
+	private static final long TIME_IN_MINUTES = 1;
 
 	private List<RSSFeedListener> listener = new ArrayList<RSSFeedListener>();
 
@@ -63,11 +66,19 @@ public class RSSFeedReader {
 	}
 
 	public void startProcessing() {
-		Timer timer = new Timer();
-		while (!closed) {
-			timer.schedule(new RSSProcessingTask(), TIME_IN_MINUTES * 60000);
-		}
-		timer.cancel();
+		final Timer timer = new Timer();
+		timer.schedule(new TimerTask() {
+
+			@Override
+			public void run() {
+				if (!closed) {
+					processFeeds();
+				} else {
+					timer.cancel();
+				}
+
+			}
+		}, 0, TIME_IN_MINUTES * 1000 * 60);
 	}
 
 	public void processFeeds() {
@@ -78,35 +89,66 @@ public class RSSFeedReader {
 			Date maxPublishedDateOfFeed = lastParsedItemMap.get(url.toString());
 			try (InputStream stream = url.openConnection().getInputStream()) {
 				SyndFeed feed = input.build(new InputStreamReader(stream));
+				
 				if (maxPublishedDateOfFeed == null) {
 					// Process all items because the feed wasn't processed
 					// before
-
+					
 					for (SyndEntry entry : feed.getEntries()) {
-						maxPublishedDateOfFeed = DateCompare.getMaxDate(maxPublishedDateOfFeed, entry.getPublishedDate());
-						
+						System.out.println(feed.getTitle() + " - " +entry.getPublishedDate().toString() + " - " + new SimpleDateFormat("EEE, d MMM yyyy HH:mm:ss Z", Locale.GERMAN).format(entry.getPublishedDate()));
+						if (entry.getPublishedDate() == null) {
+							if (feed.getPublishedDate() == null) {
+								entry.setPublishedDate(new Date());
+							} else {
+								entry.setPublishedDate(feed.getPublishedDate());
+							}
+						} else {
+							// nothing to do
+						}
+						maxPublishedDateOfFeed = DateCompare.getMaxDate(
+								maxPublishedDateOfFeed,
+								entry.getPublishedDate());
+						FeedEntry customEntry = FeedEntry.buildCustomFeedEntry(
+								feed.getTitle(), entry);
+						for (RSSFeedListener list : this.listener) {
+							list.onFeedUpdate(customEntry);
+						}
 					}
 				} else {
 					// If the feed was processed before, process only new
 					// Feed-Items.
-					for(SyndEntry entry : feed.getEntries()){
-						maxPublishedDateOfFeed = DateCompare.getMaxDate(maxPublishedDateOfFeed, entry.getPublishedDate());
+					for (SyndEntry entry : feed.getEntries()) {
+						if (DateCompare.dateIsAfterMaxDate(
+								maxPublishedDateOfFeed,
+								entry.getPublishedDate())) {
+							maxPublishedDateOfFeed = entry.getPublishedDate();
+							FeedEntry customEntry = FeedEntry
+									.buildCustomFeedEntry(feed.getTitle(),
+											entry);
+							for (RSSFeedListener list : this.listener) {
+								list.onFeedUpdate(customEntry);
+							}
+						}
 					}
 				}
 				lastParsedItemMap.put(url.toString(), maxPublishedDateOfFeed);
 
 			} catch (IOException e) {
-				LOG.error(e.getMessage());
+				for (RSSFeedListener rssFeedListener : listener) {
+					rssFeedListener.onException(e);
+				}
 			} catch (IllegalArgumentException e) {
-				LOG.error(e.getMessage());
+				for (RSSFeedListener rssFeedListener : listener) {
+					rssFeedListener.onException(e);
+				}
 			} catch (FeedException e) {
-				LOG.error(e.getMessage());
+				for (RSSFeedListener rssFeedListener : listener) {
+					rssFeedListener.onException(e);
+				}
 			}
 
 		}
 	}
-
-	
 
 	public void shutdown() {
 		this.closed = true;
@@ -134,13 +176,6 @@ public class RSSFeedReader {
 
 	public void addListener(RSSFeedListener listener) {
 		this.listener.add(listener);
-	}
-
-	class RSSProcessingTask extends TimerTask {
-
-		public void run() {
-			processFeeds();
-		}
 	}
 
 }
