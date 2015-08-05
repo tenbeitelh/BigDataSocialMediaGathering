@@ -35,7 +35,7 @@ public class RSSFeedReader {
 
 	private static final Logger LOG = LoggerFactory
 			.getLogger(RSSFeedReader.class);
-	private static final long TIME_IN_MINUTES = 1;
+	private static final long TIME_IN_MINUTES = 30;
 
 	private List<RSSFeedListener> listener = new ArrayList<RSSFeedListener>();
 
@@ -82,42 +82,78 @@ public class RSSFeedReader {
 	}
 
 	public void processFeeds() {
-		SyndFeedInput input = new SyndFeedInput();
+		final SyndFeedInput input = new SyndFeedInput();
 		input.setAllowDoctypes(true);
+		new Runnable() {
 
-		for (URL url : urlMap.values()) {
-			Date maxPublishedDateOfFeed = lastParsedItemMap.get(url.toString());
-			try (InputStream stream = url.openConnection().getInputStream()) {
-				SyndFeed feed = input.build(new InputStreamReader(stream));
-				
-				if (maxPublishedDateOfFeed == null) {
-					// Process all items because the feed wasn't processed
-					// before
-					
-					for (SyndEntry entry : feed.getEntries()) {
-						System.out.println(feed.getTitle() + " - " +entry.getPublishedDate().toString() + " - " + new SimpleDateFormat("EEE, d MMM yyyy HH:mm:ss Z", Locale.GERMAN).format(entry.getPublishedDate()));
-						if (entry.getPublishedDate() == null) {
-							if (feed.getPublishedDate() == null) {
-								entry.setPublishedDate(new Date());
-							} else {
-								entry.setPublishedDate(feed.getPublishedDate());
-							}
-						} else {
-							// nothing to do
-						}
-						maxPublishedDateOfFeed = DateCompare.getMaxDate(
-								maxPublishedDateOfFeed,
-								entry.getPublishedDate());
-						FeedEntry customEntry = FeedEntry.buildCustomFeedEntry(
-								feed.getTitle(), entry);
-						for (RSSFeedListener list : this.listener) {
-							list.onFeedUpdate(customEntry);
-						}
+			@Override
+			public void run() {
+				for (URL url : urlMap.values()) {
+					LOG.info("Processing " + url.toString());
+					// System.out.println("Processing " + url.toString());
+					processFeed(url, input);
+					try {
+						Thread.sleep(10 * 1000);
+					} catch (InterruptedException e) {
+						// TODO Auto-generated catch block
+						LOG.error(e.getMessage());
 					}
-				} else {
-					// If the feed was processed before, process only new
-					// Feed-Items.
-					for (SyndEntry entry : feed.getEntries()) {
+				}
+
+			}
+		}.run();
+
+	}
+
+	private void processFeed(URL url, SyndFeedInput input) {
+		Date maxPublishedDateOfFeed = lastParsedItemMap.get(url.toString());
+		try (InputStream stream = url.openConnection().getInputStream()) {
+			SyndFeed feed = input.build(new InputStreamReader(stream));
+
+			if (maxPublishedDateOfFeed == null) {
+				// Process all items because the feed wasn't processed
+				// before
+
+				for (SyndEntry entry : feed.getEntries()) {
+
+					if (entry.getPublishedDate() == null) {
+						if (feed.getPublishedDate() == null) {
+							entry.setPublishedDate(new Date());
+						} else {
+							entry.setPublishedDate(feed.getPublishedDate());
+						}
+					} else {
+						// nothing to do
+						System.out.println(feed.getTitle()
+								+ " - "
+								+ entry.getPublishedDate().toString()
+								+ " - "
+								+ new SimpleDateFormat(
+										"EEE, d MMM yyyy HH:mm:ss Z",
+										Locale.GERMAN).format(entry
+										.getPublishedDate()));
+					}
+					maxPublishedDateOfFeed = DateCompare.getMaxDate(
+							maxPublishedDateOfFeed, entry.getPublishedDate());
+					FeedEntry customEntry = FeedEntry.buildCustomFeedEntry(
+							feed.getTitle(), entry);
+					for (RSSFeedListener list : this.listener) {
+						list.onFeedUpdate(customEntry);
+					}
+				}
+			} else {
+				// If the feed was processed before, process only new
+				// Feed-Items.
+
+				for (SyndEntry entry : feed.getEntries()) {
+					// Get a published date if none avaialbe in the entry
+					if (entry.getPublishedDate() == null) {
+						if (feed.getPublishedDate() == null) {
+							entry.setPublishedDate(new Date());
+						} else {
+							entry.setPublishedDate(feed.getPublishedDate());
+						}
+					} else {
 						if (DateCompare.dateIsAfterMaxDate(
 								maxPublishedDateOfFeed,
 								entry.getPublishedDate())) {
@@ -131,22 +167,21 @@ public class RSSFeedReader {
 						}
 					}
 				}
-				lastParsedItemMap.put(url.toString(), maxPublishedDateOfFeed);
-
-			} catch (IOException e) {
-				for (RSSFeedListener rssFeedListener : listener) {
-					rssFeedListener.onException(e);
-				}
-			} catch (IllegalArgumentException e) {
-				for (RSSFeedListener rssFeedListener : listener) {
-					rssFeedListener.onException(e);
-				}
-			} catch (FeedException e) {
-				for (RSSFeedListener rssFeedListener : listener) {
-					rssFeedListener.onException(e);
-				}
 			}
+			lastParsedItemMap.put(url.toString(), maxPublishedDateOfFeed);
 
+		} catch (IOException e) {
+			for (RSSFeedListener rssFeedListener : listener) {
+				rssFeedListener.onException(e);
+			}
+		} catch (IllegalArgumentException e) {
+			for (RSSFeedListener rssFeedListener : listener) {
+				rssFeedListener.onException(e);
+			}
+		} catch (FeedException e) {
+			for (RSSFeedListener rssFeedListener : listener) {
+				rssFeedListener.onException(e);
+			}
 		}
 	}
 
