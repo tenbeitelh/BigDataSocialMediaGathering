@@ -69,6 +69,7 @@ public class RSSFeedReader {
 	}
 
 	public void startProcessing() {
+		this.closed = false;
 		final Timer timer = new Timer();
 		timer.schedule(new TimerTask() {
 
@@ -76,7 +77,9 @@ public class RSSFeedReader {
 			public void run() {
 				if (!closed) {
 					processFeeds();
+					
 				} else {
+					LOG.info("Stopping timer");
 					timer.cancel();
 				}
 
@@ -95,6 +98,8 @@ public class RSSFeedReader {
 					LOG.info("Processing " + url.toString());
 					// System.out.println("Processing " + url.toString());
 					processFeed(url, input);
+					LOG.info("Saving state");
+					StateSerDeseriliazer.serilazeDateMap(lastParsedItemMap);
 					try {
 						Thread.sleep(10 * 1000);
 					} catch (InterruptedException e) {
@@ -105,8 +110,8 @@ public class RSSFeedReader {
 
 			}
 		}.run();
-		LOG.info("Saving state");
-		StateSerDeseriliazer.serilazeDateMap(lastParsedItemMap);
+		
+		
 
 	}
 
@@ -129,14 +134,7 @@ public class RSSFeedReader {
 						}
 					} else {
 						// nothing to do
-						System.out.println(feed.getTitle()
-								+ " - "
-								+ entry.getPublishedDate().toString()
-								+ " - "
-								+ new SimpleDateFormat(
-										"EEE, d MMM yyyy HH:mm:ss Z",
-										Locale.GERMAN).format(entry
-										.getPublishedDate()));
+						
 					}
 					maxPublishedDateOfFeed = DateCompare.getMaxDate(
 							maxPublishedDateOfFeed, entry.getPublishedDate());
@@ -191,6 +189,7 @@ public class RSSFeedReader {
 	}
 
 	public void shutdown() {
+		LOG.info("Shutodown called");
 		this.closed = true;
 	}
 

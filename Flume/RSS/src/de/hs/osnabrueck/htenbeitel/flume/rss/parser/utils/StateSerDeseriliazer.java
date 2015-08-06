@@ -43,7 +43,7 @@ public class StateSerDeseriliazer {
 		if (new File(DATE_MAP).exists()) {
 			return (Map<String, Date>) deserilazeHashMap(DATE_MAP);
 		} else {
-			LOG.info("No serilazation file avaialble");
+			LOG.error("No serilazation file avaialble");
 			return null;
 		}
 	}
