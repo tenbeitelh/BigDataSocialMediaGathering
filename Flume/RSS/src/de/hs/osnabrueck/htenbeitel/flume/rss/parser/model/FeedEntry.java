@@ -25,7 +25,7 @@ public class FeedEntry {
 	private Date publishedDate;
 	private List<String> feedCategories = new ArrayList<String>();
 	private List<String> contents = new ArrayList<String>();
-	
+
 	private static Logger LOG = LoggerFactory.getLogger(FeedEntry.class);
 
 	public String getSourceFeed() {
@@ -190,20 +190,18 @@ public class FeedEntry {
 
 	public static FeedEntry buildCustomFeedEntry(String sourceFeed,
 			SyndEntry entry) {
-		DateFormat readFormat = new SimpleDateFormat( "EEE, d MMM yyyy HH:mm:ss Z", Locale.GERMAN);
-		
+		// DateFormat readFormat = new SimpleDateFormat(
+		// "EEE, d MMM yyyy HH:mm:ss Z", Locale.GERMAN);
+
 		FeedEntry customEntry = new FeedEntry();
 		customEntry.setSourceFeed(sourceFeed);
 		customEntry.setFeedTitle(entry.getTitle());
 		customEntry.setFeedLink(entry.getLink());
 		customEntry.setFeedDescription(entry.getDescription().getValue());
 		customEntry.setFeedComments(entry.getComments());
-		
-		try {
-			customEntry.setPublishedDate(readFormat.parse(entry.getPublishedDate().toString()));
-		} catch (ParseException e) {
-			LOG.error(e.getMessage());
-		}
+
+		customEntry.setPublishedDate(entry.getPublishedDate());
+
 		for (SyndCategory cat : entry.getCategories()) {
 			customEntry.addFeedCategory(cat.getName());
 		}

@@ -21,6 +21,7 @@ public class StateSerDeseriliazer {
 			.getLogger(StateSerDeseriliazer.class);
 
 	public static void serilazeDateMap(Map<String, Date> dateMap) {
+		LOG.info("creating " + DATE_MAP + " file");
 		serilazeHashMap(dateMap, DATE_MAP);
 	}
 

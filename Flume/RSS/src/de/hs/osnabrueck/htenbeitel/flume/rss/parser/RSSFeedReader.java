@@ -52,11 +52,14 @@ public class RSSFeedReader {
 		}
 		for (String url : urls) {
 			if (!urlMap.containsKey(url)) {
-				try {
-					urlMap.put(url, new URL(url));
-				} catch (MalformedURLException e) {
-					LOG.error(e.getMessage());
-				}
+				
+					try {
+						urlMap.put(url, new URL(url));
+					} catch (MalformedURLException e) {
+						LOG.error(e.getMessage());
+						LOG.trace(e.getMessage(), e);
+					}
+				
 			}
 			if (!lastParsedItemMap.containsKey(url)) {
 				lastParsedItemMap.put(url, null);
@@ -95,13 +98,15 @@ public class RSSFeedReader {
 					try {
 						Thread.sleep(10 * 1000);
 					} catch (InterruptedException e) {
-						// TODO Auto-generated catch block
 						LOG.error(e.getMessage());
+						LOG.trace(e.getMessage(), e);
 					}
 				}
 
 			}
 		}.run();
+		LOG.info("Saving state");
+		StateSerDeseriliazer.serilazeDateMap(lastParsedItemMap);
 
 	}
 

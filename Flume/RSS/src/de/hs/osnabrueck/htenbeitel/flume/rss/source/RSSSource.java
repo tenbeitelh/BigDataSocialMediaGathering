@@ -24,15 +24,15 @@ public class RSSSource extends AbstractSource implements EventDrivenSource,
 
 	private RSSFeedReader reader;
 
-	public RSSSource(String urlString) {
-		String[] urls = urlString.split(",");
-
-		for (int i = 0; i < urls.length; i++) {
-			urls[i] = urls[i].trim();
-		}
-
-		reader = new RSSFeedReader(urls);
-	}
+//	public RSSSource(String urlString) {
+//		String[] urls = urlString.split(",");
+//
+//		for (int i = 0; i < urls.length; i++) {
+//			urls[i] = urls[i].trim();
+//		}
+//
+//		reader = new RSSFeedReader(urls);
+//	}
 
 	@Override
 	public void configure(Context context) {
@@ -64,6 +64,7 @@ public class RSSSource extends AbstractSource implements EventDrivenSource,
 
 				headers.put("timestamp",
 						String.valueOf(entry.getPublishedDate().getTime()));
+				headers.put("source_feed", entry.getSourceFeed());
 				Event event = EventBuilder.withBody(entry.toJson().getBytes(),
 						headers);
 				channel.processEvent(event);
@@ -84,6 +85,7 @@ public class RSSSource extends AbstractSource implements EventDrivenSource,
 	@Override
 	public synchronized void stop() {
 		super.stop();
+		reader.shutdown();
 	}
 
 	// public static void main(String args[]) {
