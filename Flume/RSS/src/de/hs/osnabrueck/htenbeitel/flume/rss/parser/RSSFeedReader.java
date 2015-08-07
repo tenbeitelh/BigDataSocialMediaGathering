@@ -5,12 +5,10 @@ import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.net.MalformedURLException;
 import java.net.URL;
-import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
-import java.util.Locale;
 import java.util.Map;
 import java.util.Timer;
 import java.util.TimerTask;
@@ -24,8 +22,8 @@ import com.rometools.rome.io.FeedException;
 import com.rometools.rome.io.SyndFeedInput;
 
 import de.hs.osnabrueck.htenbeitel.flume.rss.parser.model.FeedEntry;
-import de.hs.osnabrueck.htenbeitel.flume.rss.parser.utils.DateCompare;
-import de.hs.osnabrueck.htenbeitel.flume.rss.parser.utils.StateSerDeseriliazer;
+import de.hs.osnabrueck.htenbeitel.flume.utils.DateCompare;
+import de.hs.osnabrueck.htenbeitel.flume.utils.StateSerDeseriliazer;
 
 public class RSSFeedReader {
 	private Map<String, Date> lastParsedItemMap;

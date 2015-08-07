@@ -1,4 +1,4 @@
-package de.hs.osnabrueck.htenbeitel.flume.rss.parser.utils;
+package de.hs.osnabrueck.htenbeitel.flume.utils;
 
 import java.io.File;
 import java.io.FileInputStream;

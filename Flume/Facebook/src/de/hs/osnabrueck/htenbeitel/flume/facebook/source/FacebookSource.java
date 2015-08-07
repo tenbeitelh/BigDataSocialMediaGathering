@@ -13,6 +13,7 @@ import org.slf4j.LoggerFactory;
 
 import de.hs.osnabrueck.htenbeitel.facebook.FacebookObserver;
 import de.hs.osnabrueck.htenbeitel.facebook.StatusListener;
+import de.hs.osnabrueck.htenbeitel.facebook.model.FacebookPost;
 import de.hs.osnabrueck.htenbeitel.flume.facebook.utils.FacebookConstants;
 import facebook4j.Facebook;
 import facebook4j.FacebookFactory;
@@ -25,25 +26,22 @@ public class FacebookSource extends AbstractSource implements
 	private static final Logger LOG = LoggerFactory
 			.getLogger(FacebookSource.class);
 
-	private String appId;
-	private String appSecret;
-	private String accessToken;
-	private String[] pages;
 	
-	private FacebookObserver facebook;
+	
+	private FacebookObserver facebookReader;
 
 	@Override
 	public void configure(Context context) {
 		LOG.info("Starting configuration");
 
-		this.appId = context.getString(FacebookConstants.API_ID);
-		this.appSecret = context.getString(FacebookConstants.API_SECRET);
-		this.accessToken = context.getString(FacebookConstants.ACCESS_TOKEN);
+		String appId = context.getString(FacebookConstants.API_ID);
+		String appSecret = context.getString(FacebookConstants.API_SECRET);
+		String accessToken = context.getString(FacebookConstants.ACCESS_TOKEN);
 		String pageString = context.getString(FacebookConstants.PAGES);
-		this.pages = pageString.split(",");
+		String[] pages = pageString.split(",");
 		
 		for (int i = 0; i < pages.length; i++) {
-			this.pages[i] = this.pages[i].trim();
+			pages[i] = pages[i].trim();
 		}
 		ConfigurationBuilder confBuilder = new ConfigurationBuilder();
 		
@@ -51,23 +49,25 @@ public class FacebookSource extends AbstractSource implements
 		confBuilder.setOAuthAppSecret(appSecret);
 		confBuilder.setOAuthAccessToken(accessToken);
 		
-		this.facebook = new FacebookObserver(confBuilder.build());
+		this.facebookReader = new FacebookObserver(confBuilder.build(), pages);
+		
+		final ChannelProcessor channel = getChannelProcessor();
+		final Map<String, String> headers = new HashMap<String, String>();
 		
 		StatusListener listener = new StatusListener() {
-			final ChannelProcessor channel = getChannelProcessor();
-			final Map<String, String> headers = new HashMap<String, String>();
+			
 			@Override
-			public void onPost(Post post) {
-				LOG.info("");
+			public void onPost(FacebookPost post) {
+				headers.put("timestamp", "");
 			}
 			
 			@Override
 			public void onException(Exception exception) {
-				LOG.error(exception.getLocalizedMessage());
+				LOG.error(exception.getMessage());
 			}
 		};
 		
-		this.facebook.addListener(listener);
+		
 	}
 
 	@Override

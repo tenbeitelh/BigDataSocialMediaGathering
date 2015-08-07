@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<classpath>
+	<classpathentry kind="src" path="Facebook/src"/>
+	<classpathentry kind="src" path="RSS/src"/>
+	<classpathentry kind="src" path="Twitter/Flume_Twitter_KeyWord/src"/>
+	<classpathentry kind="src" path="Twitter/Flume_Twitter_User/src"/>
+	<classpathentry kind="src" path="Twitter/TwitterConstants/src"/>
+	<classpathentry kind="src" path="Twitter/TwitterUserConverter/src"/>
+	<classpathentry kind="lib" path="RSS/target/Flume_RSSFeed-0.0.1-SNAPSHOT-shaded.jar"/>
+	<classpathentry kind="lib" path="RSS/target/Flume_RSSFeed-0.0.1-SNAPSHOT.jar"/>
+	<classpathentry kind="lib" path="RSS/target/original-Flume_RSSFeed-0.0.1-SNAPSHOT.jar"/>
+	<classpathentry kind="lib" path="Twitter/Flume_Twitter_KeyWord/target/Flume_Twitter_KeyWord-0.0.1-SNAPSHOT-shaded.jar"/>
+	<classpathentry kind="lib" path="Twitter/Flume_Twitter_KeyWord/target/Flume_Twitter_KeyWord-0.0.1-SNAPSHOT.jar"/>
+	<classpathentry kind="lib" path="Twitter/Flume_Twitter_KeyWord/target/original-Flume_Twitter_KeyWord-0.0.1-SNAPSHOT.jar"/>
+	<classpathentry kind="lib" path="Twitter/Flume_Twitter_User/target/Flume_Twitter_User-0.0.1-SNAPSHOT-shaded.jar"/>
+	<classpathentry kind="lib" path="Twitter/Flume_Twitter_User/target/Flume_Twitter_User-0.0.1-SNAPSHOT.jar"/>
+	<classpathentry kind="lib" path="Twitter/Flume_Twitter_User/target/original-Flume_Twitter_User-0.0.1-SNAPSHOT.jar"/>
+	<classpathentry kind="lib" path="Twitter/TwitterConstants/target/TwitterConstants-0.0.1-SNAPSHOT.jar"/>
+	<classpathentry kind="lib" path="Twitter/TwitterUserConverter/target/TwitterUserConverter-0.0.1-SNAPSHOT-jar-with-dependencies.jar"/>
+	<classpathentry kind="lib" path="Twitter/TwitterUserConverter/target/TwitterUserConverter-0.0.1-SNAPSHOT.jar"/>
+	<classpathentry kind="con" path="org.eclipse.jdt.launching.JRE_CONTAINER"/>
+	<classpathentry kind="output" path="Twitter/TwitterUserConverter/target/classes"/>
+</classpath>
