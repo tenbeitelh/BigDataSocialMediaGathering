@@ -67,6 +67,8 @@ public class FacebookSource extends AbstractSource implements
 			}
 		};
 		
+		this.facebookReader.addListener(listener);
+		
 		
 	}
 
