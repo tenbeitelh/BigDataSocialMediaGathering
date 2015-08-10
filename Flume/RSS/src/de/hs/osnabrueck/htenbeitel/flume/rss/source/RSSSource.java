@@ -24,16 +24,6 @@ public class RSSSource extends AbstractSource implements EventDrivenSource,
 
 	private RSSFeedReader reader;
 
-	// public RSSSource(String urlString) {
-	// String[] urls = urlString.split(",");
-	//
-	// for (int i = 0; i < urls.length; i++) {
-	// urls[i] = urls[i].trim();
-	// }
-	//
-	// reader = new RSSFeedReader(urls);
-	// }
-
 	@Override
 	public void configure(Context context) {
 		LOG.info("Configuring Source");
@@ -61,7 +51,6 @@ public class RSSSource extends AbstractSource implements EventDrivenSource,
 
 			@Override
 			public void onFeedUpdate(FeedEntry entry) {
-				// System.out.println(entry.toJson());
 				headers.put("timestamp",
 						String.valueOf(entry.getPublishedDate().getTime()));
 				headers.put("source_feed", entry.getSourceFeed());
@@ -89,9 +78,4 @@ public class RSSSource extends AbstractSource implements EventDrivenSource,
 		super.stop();
 	}
 
-	// public static void main(String args[]) {
-	// RSSSource source = new RSSSource(
-	// "http://www.spdfraktion.de/presse/pressemitteilungen/feed,https://www.cdu.de/rss.xml");
-	// source.start();
-	// }
 }

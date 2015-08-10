@@ -103,7 +103,7 @@ public class FacebookPost {
 		this.comments.add(comment);
 	}
 
-	public FacebookPost createFacebookPostObject(String pageId, Post post) {
+	public static FacebookPost createFacebookPostObject(String pageId, Post post) {
 		FacebookPost fPost = new FacebookPost();
 		if (post != null) {
 			fPost.setSourcePage(pageId);

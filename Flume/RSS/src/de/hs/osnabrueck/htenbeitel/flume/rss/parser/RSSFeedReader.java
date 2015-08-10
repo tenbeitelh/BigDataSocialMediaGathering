@@ -26,12 +26,13 @@ import de.hs.osnabrueck.htenbeitel.flume.utils.DateCompare;
 import de.hs.osnabrueck.htenbeitel.flume.utils.StateSerDeseriliazer;
 
 public class RSSFeedReader {
-
+	
 	private static final Logger LOG = LoggerFactory
 			.getLogger(RSSFeedReader.class);
 	private static final long TIME_IN_MINUTES = 30;
 	private static final String DATE_MAP = "rss_date_map.data";
-
+	private static final boolean IS_DEAMON = true;
+	
 	private Map<String, Date> lastParsedItemMap;
 	private Map<String, URL> urlMap;
 
@@ -72,7 +73,7 @@ public class RSSFeedReader {
 		this.closed = false;
 		LOG.info("Starting reading timer with interval of: "
 				+ (TIME_IN_MINUTES * 1000 * 60) + " minutes");
-		final Timer timer = new Timer();
+		final Timer timer = new Timer(IS_DEAMON);
 		timer.schedule(new TimerTask() {
 
 			@Override
@@ -87,7 +88,7 @@ public class RSSFeedReader {
 				}
 
 			}
-		}, 0, TIME_IN_MINUTES * 1000 * 60);
+		}, 0, (TIME_IN_MINUTES * 1000 * 60));
 	}
 
 	public void processFeeds() {
@@ -173,7 +174,10 @@ public class RSSFeedReader {
 					}
 				}
 			}
-			lastParsedItemMap.put(url.toString(), maxPublishedDateOfFeed);
+			if(maxPublishedDateOfFeed == null){
+				lastParsedItemMap.put(url.toString(), maxPublishedDateOfFeed);
+			}
+			
 
 		} catch (IOException e) {
 			for (RSSFeedListener rssFeedListener : listener) {

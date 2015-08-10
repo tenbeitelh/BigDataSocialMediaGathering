@@ -40,6 +40,7 @@ public class FacebookSource extends AbstractSource implements
 		for (int i = 0; i < pages.length; i++) {
 			pages[i] = pages[i].trim();
 		}
+		
 		ConfigurationBuilder confBuilder = new ConfigurationBuilder();
 
 		confBuilder.setOAuthAppId(appId);
@@ -69,6 +70,8 @@ public class FacebookSource extends AbstractSource implements
 		};
 
 		this.facebookObserver.addListener(listener);
+		
+		this.facebookObserver.startProcessing();
 
 	}
 
