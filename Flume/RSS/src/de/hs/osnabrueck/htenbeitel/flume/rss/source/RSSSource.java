@@ -44,7 +44,7 @@ public class RSSSource extends AbstractSource implements EventDrivenSource,
 		for (int i = 0; i < urls.length; i++) {
 			urls[i] = urls[i].trim();
 		}
-
+		LOG.info("Initilize Reader");
 		reader = new RSSFeedReader(urls);
 
 	}
@@ -56,7 +56,7 @@ public class RSSSource extends AbstractSource implements EventDrivenSource,
 
 		final ChannelProcessor channel = getChannelProcessor();
 		final Map<String, String> headers = new HashMap<String, String>();
-
+		LOG.info("Registering listener");
 		RSSFeedListener listener = new RSSFeedListener() {
 
 			@Override
@@ -78,6 +78,7 @@ public class RSSSource extends AbstractSource implements EventDrivenSource,
 		};
 
 		reader.addListener(listener);
+		LOG.info("Starting Reader process");
 		reader.startProcessing();
 
 	}

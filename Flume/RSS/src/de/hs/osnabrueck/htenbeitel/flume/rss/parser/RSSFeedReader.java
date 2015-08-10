@@ -68,12 +68,14 @@ public class RSSFeedReader {
 
 	public void startProcessing() {
 		this.closed = false;
+		LOG.info("Starting reading timer with interval of: " + (TIME_IN_MINUTES*1000*60) + " minutes" );
 		final Timer timer = new Timer();
 		timer.schedule(new TimerTask() {
 
 			@Override
 			public void run() {
 				if (!closed) {
+					LOG.info("Process feeds");
 					processFeeds();
 					
 				} else {
