@@ -40,7 +40,7 @@ public class FacebookSource extends AbstractSource implements
 		for (int i = 0; i < pages.length; i++) {
 			pages[i] = pages[i].trim();
 		}
-		
+
 		ConfigurationBuilder confBuilder = new ConfigurationBuilder();
 
 		confBuilder.setOAuthAppId(appId);
@@ -48,6 +48,12 @@ public class FacebookSource extends AbstractSource implements
 		confBuilder.setOAuthAccessToken(accessToken);
 
 		this.facebookObserver = new FacebookObserver(confBuilder.build(), pages);
+
+	}
+
+	@Override
+	public synchronized void start() {
+		super.start();
 
 		final ChannelProcessor channel = getChannelProcessor();
 		final Map<String, String> headers = new HashMap<String, String>();
@@ -70,14 +76,7 @@ public class FacebookSource extends AbstractSource implements
 		};
 
 		this.facebookObserver.addListener(listener);
-		
 		this.facebookObserver.startProcessing();
-
-	}
-
-	@Override
-	public synchronized void start() {
-		super.start();
 	}
 
 	@Override
