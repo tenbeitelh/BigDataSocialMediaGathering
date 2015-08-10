@@ -8,7 +8,12 @@ public class DateCompare {
 
 		Date max = null;
 		if (maxPublishedDateOfFeed == null) {
-			max = publishedDate;
+			if(publishedDate != null){
+				max = publishedDate;
+			}else{
+				max = new Date();
+			}
+			
 		} else if (maxPublishedDateOfFeed.before(publishedDate)) {
 			max = publishedDate;
 		} else {

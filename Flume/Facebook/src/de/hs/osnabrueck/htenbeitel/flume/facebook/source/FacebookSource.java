@@ -58,7 +58,8 @@ public class FacebookSource extends AbstractSource implements
 			
 			@Override
 			public void onPost(FacebookPost post) {
-				headers.put("timestamp", "");
+				headers.put("timestamp", String.valueOf(post.getCreatedTime().getTime()));
+				
 			}
 			
 			@Override

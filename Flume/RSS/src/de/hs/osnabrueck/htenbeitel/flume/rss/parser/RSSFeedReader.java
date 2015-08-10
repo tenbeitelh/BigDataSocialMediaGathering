@@ -26,21 +26,23 @@ import de.hs.osnabrueck.htenbeitel.flume.utils.DateCompare;
 import de.hs.osnabrueck.htenbeitel.flume.utils.StateSerDeseriliazer;
 
 public class RSSFeedReader {
-	private Map<String, Date> lastParsedItemMap;
-	private Map<String, URL> urlMap;
-
-	private boolean closed = false;
 
 	private static final Logger LOG = LoggerFactory
 			.getLogger(RSSFeedReader.class);
 	private static final long TIME_IN_MINUTES = 30;
+	private static final String DATE_MAP = "rss_date_map.data";
+
+	private Map<String, Date> lastParsedItemMap;
+	private Map<String, URL> urlMap;
+
+	private boolean closed = false;
 
 	private List<RSSFeedListener> listener = new ArrayList<RSSFeedListener>();
 
 	public RSSFeedReader(String[] urls) {
 		super();
 		LOG.info("Loading backed up dateMap");
-		lastParsedItemMap = StateSerDeseriliazer.deserilazeDateMap();
+		lastParsedItemMap = StateSerDeseriliazer.deserilazeDateMap(DATE_MAP);
 		if (lastParsedItemMap == null) {
 			lastParsedItemMap = new HashMap<String, Date>();
 		}
@@ -50,14 +52,14 @@ public class RSSFeedReader {
 		}
 		for (String url : urls) {
 			if (!urlMap.containsKey(url)) {
-				
-					try {
-						urlMap.put(url, new URL(url));
-					} catch (MalformedURLException e) {
-						LOG.error(e.getMessage());
-						LOG.trace(e.getMessage(), e);
-					}
-				
+
+				try {
+					urlMap.put(url, new URL(url));
+				} catch (MalformedURLException e) {
+					LOG.error(e.getMessage());
+					LOG.trace(e.getMessage(), e);
+				}
+
 			}
 			if (!lastParsedItemMap.containsKey(url)) {
 				lastParsedItemMap.put(url, null);
@@ -68,7 +70,8 @@ public class RSSFeedReader {
 
 	public void startProcessing() {
 		this.closed = false;
-		LOG.info("Starting reading timer with interval of: " + (TIME_IN_MINUTES*1000*60) + " minutes" );
+		LOG.info("Starting reading timer with interval of: "
+				+ (TIME_IN_MINUTES * 1000 * 60) + " minutes");
 		final Timer timer = new Timer();
 		timer.schedule(new TimerTask() {
 
@@ -77,7 +80,7 @@ public class RSSFeedReader {
 				if (!closed) {
 					LOG.info("Process feeds");
 					processFeeds();
-					
+
 				} else {
 					LOG.info("Stopping timer");
 					timer.cancel();
@@ -99,7 +102,8 @@ public class RSSFeedReader {
 					// System.out.println("Processing " + url.toString());
 					processFeed(url, input);
 					LOG.info("Saving state");
-					StateSerDeseriliazer.serilazeDateMap(lastParsedItemMap);
+					StateSerDeseriliazer.serilazeDateMap(lastParsedItemMap,
+							DATE_MAP);
 					try {
 						Thread.sleep(10 * 1000);
 					} catch (InterruptedException e) {
@@ -110,8 +114,6 @@ public class RSSFeedReader {
 
 			}
 		}.run();
-		
-		
 
 	}
 
@@ -134,7 +136,7 @@ public class RSSFeedReader {
 						}
 					} else {
 						// nothing to do
-						
+
 					}
 					maxPublishedDateOfFeed = DateCompare.getMaxDate(
 							maxPublishedDateOfFeed, entry.getPublishedDate());

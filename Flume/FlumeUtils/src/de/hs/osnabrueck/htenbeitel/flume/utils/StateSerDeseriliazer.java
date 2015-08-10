@@ -15,14 +15,14 @@ import org.slf4j.LoggerFactory;
 
 public class StateSerDeseriliazer {
 
-	private static final String DATE_MAP = "date_map.data";
+	
 
 	private static final Logger LOG = LoggerFactory
 			.getLogger(StateSerDeseriliazer.class);
 
-	public static void serilazeDateMap(Map<String, Date> dateMap) {
-		LOG.info("creating " + DATE_MAP + " file");
-		serilazeHashMap(dateMap, DATE_MAP);
+	public static void serilazeDateMap(Map<String, Date> dateMap, String mapName) {
+		LOG.info("creating " + mapName + " file");
+		serilazeHashMap(dateMap, mapName);
 	}
 
 	public static void serilazeHashMap(Map<?, ?> map, String filename) {
@@ -39,9 +39,9 @@ public class StateSerDeseriliazer {
 	}
 
 	@SuppressWarnings("unchecked")
-	public static Map<String, Date> deserilazeDateMap() {
-		if (new File(DATE_MAP).exists()) {
-			return (Map<String, Date>) deserilazeHashMap(DATE_MAP);
+	public static Map<String, Date> deserilazeDateMap(String mapName) {
+		if (new File(mapName).exists()) {
+			return (Map<String, Date>) deserilazeHashMap(mapName);
 		} else {
 			LOG.error("No serilazation file avaialble");
 			return null;
