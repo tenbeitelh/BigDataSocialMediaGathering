@@ -31,8 +31,9 @@ public class FacebookObserver {
 	private static final long TIME_IN_MINUTES = 5;
 	private static final String DATE_MAP = "facebook_date_map.data";
 
+	final Timer timer = new Timer(IS_DEAMON);
+
 	private Map<String, Date> dateMap;
-	private boolean closed = false;
 
 	Facebook facebook;
 	List<StatusListener> listeners = new ArrayList<StatusListener>();
@@ -56,26 +57,23 @@ public class FacebookObserver {
 		LOG.info("Start processing");
 		LOG.info("Initiliaze timer with a intervall of: "
 				+ (TIME_IN_MINUTES * 1000 * 60) + " minutes");
-		final Timer timer = new Timer(IS_DEAMON);
+
 		timer.schedule(new TimerTask() {
 
 			@Override
 			public void run() {
-				if (!closed) {
-					LOG.info("Processing pages");
-					processPages();
-				} else {
-					LOG.info("Stopping timer");
-					timer.cancel();
-				}
+				LOG.info("Processing pages");
+				processPages();
 			}
+			
 		}, 0, (TIME_IN_MINUTES * 1000 * 60));
 
 	}
 
 	public void stopProcessing() {
 		LOG.info("Stopping page processing");
-		this.closed = true;
+		LOG.info("Stopping timer");
+		timer.cancel();
 	}
 
 	public void processPages() {

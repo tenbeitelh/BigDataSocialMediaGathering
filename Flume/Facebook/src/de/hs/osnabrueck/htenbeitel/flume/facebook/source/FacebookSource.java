@@ -82,6 +82,7 @@ public class FacebookSource extends AbstractSource implements
 	@Override
 	public synchronized void stop() {
 		super.stop();
+		this.facebookObserver.stopProcessing();
 	}
 
 }
