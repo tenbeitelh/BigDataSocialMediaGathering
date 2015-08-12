@@ -8,6 +8,7 @@ tartget/
 
 # Package Files #
 *.jar
+!Hive\AmazonJsonSerDe\*.jar
 *.war
 *.ear
 
