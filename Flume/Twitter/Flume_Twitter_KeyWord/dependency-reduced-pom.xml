@@ -3,7 +3,7 @@
   <modelVersion>4.0.0</modelVersion>
   <groupId>Flume_Twitter_KeyWord</groupId>
   <artifactId>Flume_Twitter_KeyWord</artifactId>
-  <version>0.0.1-SNAPSHOT</version>
+  <version>0.0.2-SNAPSHOT</version>
   <build>
     <sourceDirectory>src</sourceDirectory>
     <pluginManagement>
@@ -81,10 +81,6 @@
         <exclusion>
           <artifactId>commons-cli</artifactId>
           <groupId>commons-cli</groupId>
-        </exclusion>
-        <exclusion>
-          <artifactId>commons-lang</artifactId>
-          <groupId>commons-lang</groupId>
         </exclusion>
         <exclusion>
           <artifactId>avro</artifactId>
@@ -297,10 +293,6 @@
         <exclusion>
           <artifactId>log4j</artifactId>
           <groupId>log4j</groupId>
-        </exclusion>
-        <exclusion>
-          <artifactId>commons-lang</artifactId>
-          <groupId>commons-lang</groupId>
         </exclusion>
         <exclusion>
           <artifactId>slf4j-log4j12</artifactId>

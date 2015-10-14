@@ -1,4 +1,4 @@
-ADD JAR <path-to-hive-serdes-jar>;
+ADD JAR hdfs://master.hs.osnabrueck.de:8020/user/hive/lib/jsonserde.jar;
 
 CREATE EXTERNAL TABLE account_tweets (
   id BIGINT,
@@ -25,7 +25,7 @@ CREATE EXTERNAL TABLE account_tweets (
     time_zone:STRING>,
   in_reply_to_screen_name STRING
 ) 
-PARTITIONED BY (datehour INT)
+PARTITIONED BY (year STRING, month STRING, day STRING)
 ROW FORMAT SERDE 'com.amazon.elasticmapreduce.JsonSerde'
 	WITH serdeproperties ( 'paths'='id, created_at, source, favorited, retweeted_status, entities, text, user, in_reply_to_screen_name' )
 LOCATION '/user/flume/account/tweets';

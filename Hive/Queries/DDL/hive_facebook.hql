@@ -1,4 +1,4 @@
-ADD JAR <path-to-hive-serdes-jar>;
+ADD JAR hdfs://master.hs.osnabrueck.de:8020/user/hive/lib/jsonserde.jar;
 
 CREATE EXTERNAL TABLE facebook (
   sourcePage STRING,
@@ -18,7 +18,7 @@ CREATE EXTERNAL TABLE facebook (
 				>>
   
 ) 
-PARTITIONED BY (datehour INT)
+PARTITIONED BY (year STRING, month STRING, day STRING)
 ROW FORMAT SERDE 'com.amazon.elasticmapreduce.JsonSerde'
 	WITH serdeproperties ( 'paths'='sourcePage, id, fromCategory, createdTime, description, message, messageTags, likes, comments' )
 LOCATION '/user/facebook';
