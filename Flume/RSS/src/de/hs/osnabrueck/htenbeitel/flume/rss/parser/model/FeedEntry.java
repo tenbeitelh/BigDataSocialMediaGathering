@@ -1,15 +1,8 @@
 package de.hs.osnabrueck.htenbeitel.flume.rss.parser.model;
 
-import java.text.DateFormat;
-import java.text.ParseException;
-import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
-import java.util.Locale;
-
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 import com.google.gson.Gson;
 import com.rometools.rome.feed.synd.SyndCategory;
@@ -26,7 +19,7 @@ public class FeedEntry {
 	private List<String> feedCategories = new ArrayList<String>();
 	private List<String> contents = new ArrayList<String>();
 
-	private static Logger LOG = LoggerFactory.getLogger(FeedEntry.class);
+	// private static Logger LOG = LoggerFactory.getLogger(FeedEntry.class);
 
 	public String getSourceFeed() {
 		return sourceFeed;
@@ -104,22 +97,14 @@ public class FeedEntry {
 	public int hashCode() {
 		final int prime = 31;
 		int result = 1;
-		result = prime * result
-				+ ((contents == null) ? 0 : contents.hashCode());
-		result = prime * result
-				+ ((feedCategories == null) ? 0 : feedCategories.hashCode());
-		result = prime * result
-				+ ((feedComments == null) ? 0 : feedComments.hashCode());
-		result = prime * result
-				+ ((feedDescription == null) ? 0 : feedDescription.hashCode());
-		result = prime * result
-				+ ((feedLink == null) ? 0 : feedLink.hashCode());
-		result = prime * result
-				+ ((feedTitle == null) ? 0 : feedTitle.hashCode());
-		result = prime * result
-				+ ((publishedDate == null) ? 0 : publishedDate.hashCode());
-		result = prime * result
-				+ ((sourceFeed == null) ? 0 : sourceFeed.hashCode());
+		result = prime * result + ((contents == null) ? 0 : contents.hashCode());
+		result = prime * result + ((feedCategories == null) ? 0 : feedCategories.hashCode());
+		result = prime * result + ((feedComments == null) ? 0 : feedComments.hashCode());
+		result = prime * result + ((feedDescription == null) ? 0 : feedDescription.hashCode());
+		result = prime * result + ((feedLink == null) ? 0 : feedLink.hashCode());
+		result = prime * result + ((feedTitle == null) ? 0 : feedTitle.hashCode());
+		result = prime * result + ((publishedDate == null) ? 0 : publishedDate.hashCode());
+		result = prime * result + ((sourceFeed == null) ? 0 : sourceFeed.hashCode());
 		return result;
 	}
 
@@ -177,19 +162,16 @@ public class FeedEntry {
 
 	@Override
 	public String toString() {
-		return "FeedEntry [sourceFeed=" + sourceFeed + ", feedTitle="
-				+ feedTitle + ", feedLink=" + feedLink + ", feedDescription="
-				+ feedDescription + ", feedComments=" + feedComments
-				+ ", publishedDate=" + publishedDate + ", feedCategories="
-				+ feedCategories + ", contents=" + contents + "]";
+		return "FeedEntry [sourceFeed=" + sourceFeed + ", feedTitle=" + feedTitle + ", feedLink=" + feedLink
+				+ ", feedDescription=" + feedDescription + ", feedComments=" + feedComments + ", publishedDate="
+				+ publishedDate + ", feedCategories=" + feedCategories + ", contents=" + contents + "]";
 	}
 
 	public String toJson() {
 		return new Gson().toJson(this);
 	}
 
-	public static FeedEntry buildCustomFeedEntry(String sourceFeed,
-			SyndEntry entry) {
+	public static FeedEntry buildCustomFeedEntry(String sourceFeed, SyndEntry entry) {
 		// DateFormat readFormat = new SimpleDateFormat(
 		// "EEE, d MMM yyyy HH:mm:ss Z", Locale.GERMAN);
 
