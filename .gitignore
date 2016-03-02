@@ -1,3 +1,4 @@
+<<<<<<< HEAD
 *.class
 
 .settings/
@@ -16,3 +17,23 @@ tartget/
 
 # virtual machine crash logs, see http://www.java.com/en/download/help/error_hotspot.xml
 hs_err_pid*
+=======
+*.class
+
+.settings/
+tartget/
+
+# Mobile Tools for Java (J2ME)
+.mtj.tmp/
+
+# Package Files #
+*.jar
+!Hive/AmazonJsonSerDe/jsonserde.jar
+*.war
+*.ear
+
+*.data
+
+# virtual machine crash logs, see http://www.java.com/en/download/help/error_hotspot.xml
+hs_err_pid*
+>>>>>>> 123a7030a7c708a24057c0b4ea7b60d9a600628e
