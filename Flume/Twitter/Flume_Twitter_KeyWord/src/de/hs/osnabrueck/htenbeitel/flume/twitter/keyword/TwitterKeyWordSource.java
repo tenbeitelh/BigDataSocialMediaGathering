@@ -31,14 +31,12 @@ import twitter4j.json.DataObjectFactory;
 import de.hs.osnabrueck.flume.twitter.constants.TwitterConstants;
 import de.hs.osnabrueck.htenbeitel.flume.utils.FileAppender;
 
-public class TwitterKeyWordSource extends AbstractSource implements
-		EventDrivenSource, Configurable {
+public class TwitterKeyWordSource extends AbstractSource implements EventDrivenSource, Configurable {
 
-	private static final Logger LOG = LoggerFactory
-			.getLogger(TwitterKeyWordSource.class);
+	private static final Logger LOG = LoggerFactory.getLogger(TwitterKeyWordSource.class);
 
 	private static final String FILE_NAME = "new_twitter_keywords.txt";
-	
+
 	private static Set<String> RECOGNIZED_HASH_TAGS = new HashSet<String>();
 
 	private String consumerKey;
@@ -57,8 +55,7 @@ public class TwitterKeyWordSource extends AbstractSource implements
 		consumerSecret = context.getString(TwitterConstants.CONSUMER_SECRET);
 		accessToken = context.getString(TwitterConstants.ACCESS_TOKEN);
 		accessTokenSecret = context.getString(TwitterConstants.ACCESS_SECRET);
-		String keywordString = context
-				.getString(TwitterConstants.TWITTER_KEYWORDS);
+		String keywordString = context.getString(TwitterConstants.TWITTER_KEYWORDS);
 		LOG.info("Processing keywords");
 		if (keywordString.length() > 0) {
 			this.keywords = keywordString.split(",");
@@ -88,25 +85,25 @@ public class TwitterKeyWordSource extends AbstractSource implements
 
 			@Override
 			public void onStatus(Status status) {
-				for (HashtagEntity entity : status.getHashtagEntities()) {
-					String tag = "#"+entity.getText();
-					if (!ArrayUtils.contains(keywords, tag) && !RECOGNIZED_HASH_TAGS.contains(tag)) {
-						RECOGNIZED_HASH_TAGS.add(tag);
-						try {
-							FileAppender.appendToFile(FILE_NAME,
-									tag + "\n");
-						} catch (IOException e) {
-							LOG.error("Can't write new hashtag to file: "
-									+ e.getMessage());
-						}
-					}
-				}
 
-				headers.put("timestamp",
-						String.valueOf(status.getCreatedAt().getTime()));
-				Event event = EventBuilder.withBody(DataObjectFactory
-						.getRawJSON(status).getBytes(), headers);
+				headers.put("timestamp", String.valueOf(status.getCreatedAt().getTime()));
+				Event event = EventBuilder.withBody(DataObjectFactory.getRawJSON(status).getBytes(), headers);
 				channel.processEvent(event);
+				
+				// for (HashtagEntity entity : status.getHashtagEntities()) {
+				// String tag = "#"+entity.getText();
+				// if (!ArrayUtils.contains(keywords, tag) &&
+				// !RECOGNIZED_HASH_TAGS.contains(tag)) {
+				// RECOGNIZED_HASH_TAGS.add(tag);
+				// try {
+				// FileAppender.appendToFile(FILE_NAME,
+				// tag + "\n");
+				// } catch (IOException e) {
+				// LOG.error("Can't write new hashtag to file: "
+				// + e.getMessage());
+				// }
+				// }
+				// }
 			}
 
 			@Override
@@ -139,7 +136,9 @@ public class TwitterKeyWordSource extends AbstractSource implements
 			LOG.info("Starting twitter filtering...");
 			FilterQuery query = new FilterQuery().track(keywords);
 			// new FilterQuery(count, follow);
+
 			tStream.filter(query);
+
 		}
 
 		super.start();
